@@ -1,26 +1,31 @@
 function loadHistory() {
-    const container = document.getElementById("historyList");
+    const container = document.getElementById("historyContainer");
     let entries = JSON.parse(localStorage.getItem("history_log") || "[]");
 
     if (entries.length === 0) {
-        container.innerText = "Ingen fullførte økter registrert ennå.";
+        container.innerHTML = "<p>Ingen fullførte økter registrert ennå.</p>";
         return;
     }
 
-    let text = "";
+    entries.reverse(); // nyeste økter først
 
     entries.forEach(e => {
-        text += 
-`Uke ${e.week + 1}, ${e.weekday} – ${e.date}
-Økt: ${e.type}
-Km sykkel: ${e.kmSykkel ?? "-"}
-Km gå: ${e.kmGaa ?? "-"}
-✔ Fullført
+        const box = document.createElement("div");
+        box.className = "history-box " + e.type;
 
-`;
+        box.innerHTML = `
+            <div class="history-top ${e.type}"></div>
+            <div class="history-content">
+                <h3>${e.weekday} ${e.date} – Uke ${e.week + 1}</h3>
+                <p><strong>Økt:</strong> ${e.type}</p>
+                <p><strong>Kilometer sykkel:</strong> ${e.kmSykkel ?? "-"}</p>
+                <p><strong>Kilometer gå:</strong> ${e.kmGaa ?? "-"}</p>
+                <p class="done">✔ Fullført</p>
+            </div>
+        `;
+
+        container.appendChild(box);
     });
-
-    container.innerText = text;
 }
 
 loadHistory();
