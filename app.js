@@ -95,30 +95,60 @@ function updateTitles() {
 }
 
 /* ---------------------------------------------------------
-   KM-SUMMERING
+   KM-FELT (DEN MANGLENDE FUNKSJONEN)
 --------------------------------------------------------- */
-function getWeeklyKmSykkel(week) {
-    let sum = 0;
-    for (let d = 0; d < 7; d++) {
-        const key = `km_sykkel_uke${week}_dag${d}`;
-        const val = parseFloat(localStorage.getItem(key));
-        if (!isNaN(val)) sum += val;
-    }
-    return sum;
-}
+function showKmFields(week, day, text) {
+  const kmBox = document.getElementById("kmFields");
+  kmBox.innerHTML = "";
 
-function getWeeklyKmGaa(week) {
-    let sum = 0;
-    for (let d = 0; d < 7; d++) {
-        const key = `km_gaa_uke${week}_dag${d}`;
-        const val = parseFloat(localStorage.getItem(key));
-        if (!isNaN(val)) sum += val;
-    }
-    return sum;
+  const lower = text.toLowerCase();
+
+  // Sykkel
+  if (lower.includes("landevei") || lower.includes("sykkel")) {
+    const key = `km_sykkel_uke${week}_dag${day}`;
+    const stored = localStorage.getItem(key) || "";
+    kmBox.innerHTML += `
+      <label>Km sykkel:</label>
+      <input type="number" id="kmSykkel" step="0.1" value="${stored}">
+    `;
+  }
+
+  // Gå
+  if (lower.includes("gå")) {
+    const key = `km_gaa_uke${week}_dag${day}`;
+    const stored = localStorage.getItem(key) || "";
+    kmBox.innerHTML += `
+      <label>Km gå:</label>
+      <input type="number" id="kmGaa" step="0.1" value="${stored}">
+    `;
+  }
 }
 
 /* ---------------------------------------------------------
-   MÅL-MODAL (inkl. vekt + km)
+   KM-SUMMERING
+--------------------------------------------------------- */
+function getWeeklyKmSykkel(week) {
+  let sum = 0;
+  for (let d = 0; d < 7; d++) {
+    const key = `km_sykkel_uke${week}_dag${d}`;
+    const val = parseFloat(localStorage.getItem(key));
+    if (!isNaN(val)) sum += val;
+  }
+  return sum;
+}
+
+function getWeeklyKmGaa(week) {
+  let sum = 0;
+  for (let d = 0; d < 7; d++) {
+    const key = `km_gaa_uke${week}_dag${d}`;
+    const val = parseFloat(localStorage.getItem(key));
+    if (!isNaN(val)) sum += val;
+  }
+  return sum;
+}
+
+/* ---------------------------------------------------------
+   MÅL-MODAL
 --------------------------------------------------------- */
 function openGoalsModal() {
   const week = getWeek();
@@ -154,10 +184,10 @@ function openGoalsModal() {
     status.innerText += " (vekt registreres kun på mandager i aktuell uke)";
   }
 
-  // Vektendring siden start
   const startWeight = localStorage.getItem("weight_start");
   changeEl.innerText = "";
   changeEl.className = "";
+
   if (startWeight && stored) {
     const diff = parseFloat(stored) - parseFloat(startWeight);
     if (!isNaN(diff) && diff !== 0) {
@@ -168,13 +198,11 @@ function openGoalsModal() {
         changeEl.innerText = "⬆️ " + diff.toFixed(1) + " kg siden start";
         changeEl.className = "weight-up";
       }
-    } else if (!isNaN(diff) && diff === 0) {
+    } else {
       changeEl.innerText = "Uendret vekt siden start";
-      changeEl.className = "";
     }
   }
 
-  // Km denne uken
   const kmSykkel = getWeeklyKmSykkel(week);
   const kmGaa = getWeeklyKmGaa(week);
   document.getElementById("kmWeek").innerText =
@@ -213,16 +241,15 @@ function saveWeight() {
           changeEl.innerText = "⬆️ " + diff.toFixed(1) + " kg siden start";
           changeEl.className = "weight-up";
         }
-      } else if (!isNaN(diff) && diff === 0) {
+      } else {
         changeEl.innerText = "Uendret vekt siden start";
-        changeEl.className = "";
       }
     }
   }
 }
 
 /* ---------------------------------------------------------
-   ØVELSESMODAL + CHECKBOXER + KM-LAGRING
+   ØVELSESMODAL
 --------------------------------------------------------- */
 function sanitizeId(text) {
   return text.toLowerCase()
@@ -256,7 +283,6 @@ function openExerciseModal() {
     container.appendChild(label);
   });
 
-  // Km-felt basert på dagens tekst
   const todayData = weeks[week][day];
   showKmFields(week, day, todayData.t);
 
@@ -267,7 +293,6 @@ function closeExerciseModal() {
   const week = getWeek();
   const day = getDayIndex(0);
 
-  // Lagre km sykkel
   const kmSykkelInput = document.getElementById("kmSykkel");
   if (kmSykkelInput) {
     const val = kmSykkelInput.value;
@@ -276,7 +301,6 @@ function closeExerciseModal() {
     else localStorage.removeItem(key);
   }
 
-  // Lagre km gå
   const kmGaaInput = document.getElementById("kmGaa");
   if (kmGaaInput) {
     const val = kmGaaInput.value;
@@ -285,7 +309,6 @@ function closeExerciseModal() {
     else localStorage.removeItem(key);
   }
 
-  // Sjekk om alle øvelser er fullført
   const list = exercises[week][day];
   let allExercisesDone = true;
 
@@ -296,13 +319,10 @@ function closeExerciseModal() {
     }
   });
 
-  // Sjekk om km-felt er fylt ut (hvis de finnes)
   let kmOk = true;
-
   if (kmSykkelInput && kmSykkelInput.value === "") kmOk = false;
   if (kmGaaInput && kmGaaInput.value === "") kmOk = false;
 
-  // Vis kun hvis alt er fullført, og ikke vist før denne dagen
   const doneKey = `all_done_uke${week}_dag${day}`;
 
   if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
@@ -346,3 +366,4 @@ function update() {
    INIT
 --------------------------------------------------------- */
 update();
+
