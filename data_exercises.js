@@ -1,446 +1,322 @@
 /* ---------------------------------------------------------
-   EXERCISES (uke 1–8) MED UTTØYING
-   Dette er øvelsene som vises i modal-vinduet.
-   Tekstene for dagens/morgendagens økt ligger i data_weeks.js
+   EXERCISES (uke 1–8) – kompakt og trygg versjon
+   Samme innhold, men kortere og uten risiko for avkutting.
 --------------------------------------------------------- */
 
+const stretch = [
+  "Uttøying:",
+  "Hoftebøyer 30 sek",
+  "Sete 30 sek",
+  "Hamstring 30 sek",
+  "Legger 20 sek",
+  "Brystrygg åpner 20 sek",
+  "Sidebøy 20 sek",
+  "Rotasjonsmobilitet 20 sek"
+];
+
+function styrke(oppv, list, nedkj) {
+  return [
+    `Sykkel ${oppv} min (oppvarming)`,
+    ...list,
+    `Sykkel ${nedkj} min (nedkjøring)`,
+    ...stretch
+  ];
+}
+
 const exercises = [
-  // UKE 1
+  /* ---------------------------------------------------------
+     UKE 1
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 25 min (oppvarming)",
+    styrke(25, [
       "Beinpress 3×10–12",
       "Step-ups 3×8",
       "Hoftehev 3×12–15",
       "Planke 1×60 sek",
       "Bird Dog 2×8",
-      "Bøyde bein-løft 3×8",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×8"
+    ], 18),
+
     ["Landevei 45–60 min"],
-    [
-      "Sykkel 25 min (oppvarming)",
+
+    styrke(25, [
       "Brystpress 3×8–12",
       "Sittende roing 3×10–12",
       "Nedtrekk 3×10–12",
-      "Balanse 3×20–30 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×20–30 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel 60 min / gå 5 km"],
-    [
-      "Sykkel 25 min (oppvarming)",
+
+    styrke(25, [
       "Gulv opp/ned 2×2",
       "Rocking 3×10",
       "Beinløft 3×8",
       "Planke 1×60 sek",
       "Sideplanke 2×20–30 sek",
-      "Bird Dog 2×8",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×8"
+    ], 18),
+
     ["Landevei 60–90 min"],
     ["Hvile"]
   ],
 
-  // UKE 2
+  /* ---------------------------------------------------------
+     UKE 2
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 3×11–13",
       "Step-ups 3×9",
       "Hoftehev 3×13–16",
       "Planke 1×65 sek",
       "Bird Dog 2×9",
-      "Bøyde bein-løft 3×9",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×9"
+    ], 18),
+
     ["Landevei 50–65 min"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Brystpress 3×9–13",
       "Sittende roing 3×11–13",
       "Nedtrekk 3×11–13",
-      "Balanse 3×25–35 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×25–35 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Gulv opp/ned 2×2",
       "Rocking 3×11",
       "Beinløft 3×9",
       "Planke 1×65 sek",
       "Sideplanke 2×25–35 sek",
-      "Bird Dog 2×9",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×9"
+    ], 18),
+
     ["Landevei 65–95 min"],
     ["Hvile"]
   ],
 
-  // UKE 3
+  /* ---------------------------------------------------------
+     UKE 3
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 4×10–12",
       "Step-ups 3×8",
       "Hoftehev 3×12–15",
       "Planke 1×70 sek",
       "Bird Dog 2×8",
-      "Bøyde bein-løft 3×8",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×8"
+    ], 18),
+
     ["Landevei 50–70 min"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Brystpress 4×8–12",
       "Sittende roing 3×10–12",
       "Nedtrekk 3×10–12",
-      "Balanse 3×25–35 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×25–35 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Gulv opp/ned 2×2",
       "Rocking 3×10",
       "Beinløft 3×8",
       "Planke 1×70 sek",
       "Sideplanke 2×25–35 sek",
-      "Bird Dog 2×8",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×8"
+    ], 18),
+
     ["Landevei 70–100 min"],
     ["Hvile"]
   ],
 
-  // UKE 4
+  /* ---------------------------------------------------------
+     UKE 4
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 4×10–12",
       "Step-ups 3×8",
       "Hoftehev 3×12–15",
       "Planke 1×70 sek",
       "Bird Dog 2×8",
-      "Bøyde bein-løft 3×8",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×8"
+    ], 18),
+
     ["Landevei 50–70 min"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Brystpress 4×8–12",
       "Sittende roing 3×10–12",
       "Nedtrekk 3×10–12",
-      "Balanse 3×25–35 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×25–35 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Gulv opp/ned 2×2",
       "Rocking 3×10",
       "Beinløft 3×8",
       "Planke 1×70 sek",
       "Sideplanke 2×25–35 sek",
-      "Bird Dog 2×8",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×8"
+    ], 18),
+
     ["Landevei 70–100 min"],
     ["Hvile"]
   ],
 
-  // UKE 5
+  /* ---------------------------------------------------------
+     UKE 5
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 3×12–14",
       "Step-ups 3×10",
       "Hoftehev 3×14–17",
       "Planke 1×75 sek",
       "Bird Dog 2×10",
-      "Bøyde bein-løft 3×10",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×10"
+    ], 18),
+
     ["Landevei 50–70 min"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Brystpress 3×10–14",
       "Sittende roing 3×12–14",
       "Nedtrekk 3×12–14",
-      "Balanse 3×30–40 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×30–40 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Gulv opp/ned 2×2",
       "Rocking 3×12",
       "Beinløft 3×10",
       "Planke 1×75 sek",
       "Sideplanke 2×30–40 sek",
-      "Bird Dog 2×10",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×10"
+    ], 18),
+
     ["Landevei 75–105 min"],
     ["Hvile"]
   ],
 
-  // UKE 6
+  /* ---------------------------------------------------------
+     UKE 6
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 4×12–14",
       "Step-ups 3×10",
       "Hoftehev 3×14–17",
       "Planke 1×80 sek",
       "Bird Dog 2×10",
-      "Bøyde bein-løft 3×10",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×10"
+    ], 18),
+
     ["Landevei 50–70 min"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Brystpress 4×10–14",
       "Sittende roing 3×12–14",
       "Nedtrekk 3×12–14",
-      "Balanse 3×30–40 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×30–40 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Gulv opp/ned 3×2",
       "Rocking 3×12",
       "Beinløft 3×10",
       "Planke 1×80 sek",
       "Sideplanke 2×30–40 sek",
-      "Bird Dog 2×10",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×10"
+    ], 18),
+
     ["Landevei 75–105 min"],
     ["Hvile"]
   ],
 
-  // UKE 7
+  /* ---------------------------------------------------------
+     UKE 7
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 4×13–15",
       "Step-ups 3×11",
       "Hoftehev 3×15–18",
       "Planke 1×85 sek",
       "Bird Dog 2×11",
-      "Bøyde bein-løft 3×11",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bøyde bein-løft 3×11"
+    ], 18),
+
     ["Landevei 55–75 min"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Brystpress 4×11–15",
       "Sittende roing 3×13–15",
       "Nedtrekk 3×13–15",
-      "Balanse 3×35–45 sek",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Balanse 3×35–45 sek"
+    ], 18),
+
     ["Hvile / rolig sykkel"],
-    [
-      "Sykkel 18 min (oppvarming)",
+
+    styrke(18, [
       "Gulv opp/ned 3×2",
       "Rocking 3×13",
       "Beinløft 3×11",
       "Planke 1×85 sek",
       "Sideplanke 2×35–45 sek",
-      "Bird Dog 2×11",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobilitet 20 sek"
-    ],
+      "Bird Dog 2×11"
+    ], 18),
+
     ["Landevei 80–110 min"],
     ["Hvile"]
   ],
 
-  // UKE 8
+  /* ---------------------------------------------------------
+     UKE 8
+  --------------------------------------------------------- */
   [
-    [
-      "Sykkel 18 min (oppvarming)",
+    styrke(18, [
       "Beinpress 4×13–15",
       "Step-ups 3×11",
       "Hoftehev 3×15–18",
       "Planke 1×90 sek",
       "Bird Dog 2×11",
-      "Bøyde bein-løft 3×11",
-      "Sykkel 18 min (nedkjøring)",
-      "Uttøying:",
-      "Hoftebøyer 30 sek",
-      "Sete 30 sek",
-      "Hamstring 30 sek",
-      "Legger 20 sek",
-      "Brystrygg åpner 20 sek",
-      "Sidebøy 20 sek",
-      "Rotasjonsmobil
+      "Bøyde bein-løft 3×11"
+    ], 18),
+
+    ["Landevei 60–75 min"],
+
+    styrke(18, [
+      "Brystpress 4×11–15",
+      "Sittende roing 3×13–15",
+      "Nedtrekk 3×13–15",
+      "Balanse 3×35–45 sek"
+    ], 18),
+
+    ["Hvile / rolig sykkel"],
+
+    styrke(18, [
+      "Gulv opp/ned 3×2",
+      "Rocking 3×13",
+      "Beinløft 3×11",
+      "Planke 1×90 sek",
+      "Sideplanke 2×35–45 sek",
+      "Bird Dog 2×11"
+    ], 18),
+
+    ["Landevei 90–120 min"],
+    ["Hvile"]
+  ]
+];
