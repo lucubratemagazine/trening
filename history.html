@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <title>Treningshistorikk</title>
+    <style>
+      body { font-family: sans-serif; margin: 2em; }
+      button { font-size: 1.2em; }
+      table { margin-top: 1em; border-collapse: collapse; }
+      th, td { border: 1px solid #ccc; padding: 0.5em; }
+    </style>
+</head>
+<body>
+    <h1>Treningshistorikk</h1>
+    <button id="showHistory">Se historikk</button>
+    <div id="history"></div>
+    <script>
+    document.getElementById('showHistory').onclick = function() {
+        fetch('history.csv')
+            .then(response => {
+                if (!response.ok) throw new Error("history.csv ikke funnet");
+                return response.text();
+            })
+            .then(data => {
+                var lines = data.trim().split('\n');
+                var table = document.createElement('table');
+                var headerRow = document.createElement('tr');
+                lines[0].split(',').forEach(function(h) {
+                    var th = document.createElement('th');
+                    th.textContent = h.trim();
+                    headerRow.appendChild(th);
+                });
+                table.appendChild(headerRow);
+                for (var i = 1; i < lines.length; i++) {
+                    var row = document.createElement('tr');
+                    lines[i].split(',').forEach(function(cell) {
+                        var td = document.createElement('td');
+                        td.textContent = cell.trim();
+                        row.appendChild(td);
+                    });
+                    table.appendChild(row);
+                }
+                var historyDiv = document.getElementById('history');
+                historyDiv.innerHTML = '';
+                historyDiv.appendChild(table);
+            })
+            .catch(e => {
+                document.getElementById('history').textContent = 'Kunne ikke hente historikk: ' + e.message;
+            });
+    };
+    </script>
+</body>
+</html>
