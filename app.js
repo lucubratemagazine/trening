@@ -325,7 +325,33 @@ function closeExerciseModal() {
 
   const doneKey = `all_done_uke${week}_dag${day}`;
 
-  if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
+ if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
+    localStorage.setItem(doneKey, "1");
+
+    // Logg historikk
+    const week = getWeek();
+    const day = getDayIndex(0);
+    const todayData = weeks[week][day];
+
+    const entry = {
+        week: week,
+        day: day,
+        weekday: ["Man","Tir","Ons","Tor","Fre","Lør","Søn"][day],
+        date: new Date().toLocaleDateString("no-NO"),
+        type: todayData.c,
+        kmSykkel: kmSykkelInput?.value || null,
+        kmGaa: kmGaaInput?.value || null
+    };
+
+    let log = JSON.parse(localStorage.getItem("history_log") || "[]");
+    log.push(entry);
+    localStorage.setItem("history_log", JSON.stringify(log));
+
+    // Toast
+    const msg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
+    showToast(msg);
+}
+
     localStorage.setItem(doneKey, "1");
     const msg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
     showToast(msg);
