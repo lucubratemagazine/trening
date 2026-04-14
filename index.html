@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Treningsplan</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1E40AF">
+
+<style>
+:root {
+    --styrke: #3b82f6;
+    --sykkel: #22c55e;
+    --hvile:  #9ca3af;
+    --bakgrunn: #f5f5f5;
+    --tekst: #111;
+    --kort: #ffffff;
+    --skygge: rgba(0,0,0,0.12);
+    --overlay: rgba(0,0,0,0.45);
+    --nedgang: #16a34a;
+    --okning: #dc2626;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bakgrunn: #050505;
+        --tekst: #f3f4f6;
+        --kort: #111827;
+        --skygge: rgba(0,0,0,0.6);
+        --overlay: rgba(0,0,0,0.7);
+    }
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--bakgrunn);
+    color: var(--tekst);
+    margin: 0;
+    padding: 12px;
+    max-width: 480px;
+    margin-inline: auto;
+}
+
+h1 {
+    font-size: 24px;
+    margin: 4px 0 2px;
+    text-align: center;
+}
+
+#weekHeader {
+    text-align: center;
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 6px;
+}
+
+h2 {
+    font-size: 18px;
+    margin-top: 16px;
+    margin-bottom: 4px;
+}
+
+.box {
+    background: var(--kort);
+    padding: 14px;
+    border-radius: 12px;
+    line-height: 1.5;
+    white-space: pre-line;
+    box-shadow: 0 3px 8px var(--skygge);
+    margin-bottom: 6px;
+    font-size: 15px;
+}
+
+.styrke { border-left: 8px solid var(--styrke); background: linear-gradient(to right, rgba(59,130,246,0.12), transparent); }
+.sykkel { border-left: 8px solid var(--sykkel); background: linear-gradient(to right, rgba(34,197,94,0.12), transparent); }
+.hvile  { border-left: 8px solid var(--hvile);  background: linear-gradient(to right, rgba(156,163,175,0.18), transparent); }
+
+.btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 8px 0 10px;
+}
+
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+    box-shadow: 0 3px 6px var(--skygge);
+    transition: 0.15s;
+}
+
+button:active {
+    transform: scale(0.96);
+}
+
+.small-btn {
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 999px;
+}
+
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info {
+    margin-top: 6px;
+    font-size: 12px;
+    opacity: 0.7;
+    text-align: center;
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
+}
+
+.modal {
+    background: var(--kort);
+    color: var(--tekst);
+    padding: 16px;
+    border-radius: 14px;
+    max-width: 420px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 6px 18px var(--skygge);
+    font-size: 14px;
+}
+
+.modal h3 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 18px;
+}
+
+.modal section {
+    margin-bottom: 10px;
+}
+
+.modal label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.modal input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+}
+
+.modal input[type="number"] {
+    width: 90px;
+    padding: 4px 6px;
+    border-radius: 6px;
+    border: 1px solid #9ca3af;
+    font-size: 14px;
+}
+
+.modal-footer {
+    margin-top: 10px;
+    text-align: right;
+}
+
+.modal-footer button {
+    background: #4b5563;
+    font-size: 13px;
+    padding: 6px 12px;
+}
+
+#weightChange {
+    margin-top: 4px;
+    font-size: 12px;
+}
+
+.weight-down { color: var(--nedgang); }
+.weight-up   { color: var(--okning); }
+</style>
+</head>
+
+<body>
+
+<h1>Treningsplan</h1>
+<div id="weekHeader"></div>
+
+<div class="btn-row">
+    <button onclick="changeWeek(-1)">Forrige uke</button>
+    <button onclick="changeWeek(1)">Neste uke</button>
+</div>
+
+<div class="header-row">
+    <h2 id="todayTitle" style="margin-bottom:4px;">Dagens økt</h2>
+    <button class="small-btn" onclick="openExerciseModal()">Fullfør øvelser</button>
+</div>
+<div class="box" id="todayBox">Laster...</div>
+
+<h2 id="tomorrowTitle">Morgendagens økt</h2>
+<div class="box" id="tomorrowBox">Laster...</div>
+
+<div class="header-row">
+    <h2 style="margin-bottom:4px;">Ukemål</h2>
+    <button class="small-btn" onclick="openGoalsModal()">🎯 Mål</button>
+</div>
+<div class="box" id="goalBox">Laster...</div>
+
+<div class="info" id="debugInfo"></div>
+
+<!-- Mål-modal -->
+<div class="modal-overlay" id="goalsOverlay" onclick="closeGoalsModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>Ukemål og langsiktige mål</h3>
+    <section>
+      <strong>Ukemål (denne uken):</strong>
+      <div id="goalsWeekText"></div>
+    </section>
+    <section>
+      <strong>Vektmål:</strong>
+      <div>Reduksjon ca. 1 kg per måned, med fokus på jevnhet og bærekraft.</div>
+    </section>
+    <section>
+      <strong>Funksjonsmål:</strong>
+      <div>Kunne reise deg fra gulvet uten støtte. Delmål: bedre hoftebevegelighet, sterkere kjerne, trygg overgang fra liggende til stående.</div>
+    </section>
+    <section>
+      <strong>Vekt denne uken:</strong><br>
+      <input type="number" id="weightInput" step="0.1"> kg
+      <button class="small-btn" id="weightSaveBtn" onclick="saveWeight()">Lagre</button>
+      <div id="weightStatus" style="margin-top:4px;font-size:12px;opacity:0.8;"></div>
+      <div id="weightChange"></div>
+    </section>
+    <section>
+      <strong>Km denne uken:</strong>
+      <div id="kmWeek"></div>
+    </section>
+    <div class="modal-footer">
+      <button onclick="closeGoalsModal()">Lukk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Øvelses-modal -->
+<div class="modal-overlay" id="exerciseOverlay" onclick="closeExerciseModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>Dagens øvelser</h3>
+    <div id="exerciseList"></div>
+    <div id="kmFields" style="margin-top:8px;"></div>
+    <div class="modal-footer">
+      <button onclick="closeExerciseModal()">Lukk</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast"
+     style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+            background:#2563eb;color:white;padding:10px 18px;border-radius:10px;
+            font-size:14px;box-shadow:0 3px 8px rgba(0,0,0,0.3);
+            display:none;z-index:200;">
+</div>
+
+<!-- Positive meldinger + showToast kommer fra messages.js -->
+<script src="messages.js"></script>
+
+<script>
+/* ---------------------------------------------------------
+   STARTDATO
+--------------------------------------------------------- */
+const startDate = new Date(2026, 3, 13);
+
+/* ---------------------------------------------------------
+   UKEMÅL (kort + langt)
+--------------------------------------------------------- */
+const weekGoals = [
+  "Uke 1 – Finne rytmen\n• Gjennomføre alle tre styrkeøktene uten smerte\n• Holde sykkeløktene rolige og jevne\n• Fokus på teknikk i alle øvelser",
+  "Uke 2 – Stabilitet og kontroll\n• Øke reps i styrkeøktene uten å miste kvalitet\n• Jevnere tråkk på sykkel (kadens 80–90)\n• Ingen økter skal føles «tunge»",
+  "Uke 3 – Bygge kapasitet\n• Legge til ett ekstra sett på hovedøvelsen\n• Øke total sykkeltid med 10 minutter\n• Bedre balanse i overkroppsøkten",
+  "Uke 4 – Konsistens og teknikk\n• Alle øvelser skal føles teknisk stabile\n• Ingen hopp i belastning – bare ren kvalitet\n• Fokus på pust og kontroll i kjernedelen",
+  "Uke 5 – Øke toleranse\n• Øke reps i alle styrkeøkter\n• Landevei: holde jevn intensitet i hele turen\n• Mindre pauser mellom settene",
+  "Uke 6 – Styrke og stabilitet\n• Ett ekstra sett på hovedøvelsen\n• Planke og sideplanke skal føles kontrollerte\n• Sykkel: holde jevn fart i motbakker",
+  "Uke 7 – Forberede toppuke\n• Øke reps i styrkeøktene\n• Sykkel: holde jevn intensitet i 75 % av turen\n• Fokus på god restitusjon",
+  "Uke 8 – Toppuke\n• Gjennomføre alle økter med best mulig kvalitet\n• Landevei: lengste tur så langt\n• Ingen smerter i hofter eller knær"
+];
+
+const goalsShort = [
+  "Finne rytmen og komme i gang.",
+  "Stabilitet og jevn gjennomføring.",
+  "Bygge kapasitet og tåle mer.",
+  "Konsistens og teknikk.",
+  "Øke toleranse og redusere pauser.",
+  "Styrke og stabilitet.",
+  "Forberede toppuke.",
+  "Toppuke – beste gjennomføring."
+];
+
+/* ---------------------------------------------------------
+   WEEKS (uke 1–8)
+--------------------------------------------------------- */
+const weeks = [
+  // UKE 1
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 25 min rolig sykkel\n\n• Beinpress 3×10–12\n• Step-ups 3×8\n• Hoftehev 3×12–15\n• Planke 1×60 sek\n• Bird Dog 2×8\n• Bøyde bein-løft 3×8\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 45–60 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 25 min rolig sykkel\n\n• Brystpress 3×8–12\n• Sittende roing 3×10–12\n• Nedtrekk 3×10–12\n• Balanse 3×20–30 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel 60 min / gå 5 km", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 25 min rolig sykkel\n\n• Gulv opp/ned 2×2\n• Rocking 3×10\n• Beinløft 3×8\n• Planke 1×60 sek\n• Sideplanke 2×20–30 sek\n• Bird Dog 2×8\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 60–90 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 2
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 3×11–13\n• Step-ups 3×9\n• Hoftehev 3×13–16\n• Planke 1×65 sek\n• Bird Dog 2×9\n• Bøyde bein-løft 3×9\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 50–65 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 3×9–13\n• Sittende roing 3×11–13\n• Nedtrekk 3×11–13\n• Balanse 3×25–35 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 2×2\n• Rocking 3×11\n• Beinløft 3×9\n• Planke 1×65 sek\n• Sideplanke 2×25–35 sek\n• Bird Dog 2×9\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 65–95 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 3
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 4×10–12\n• Step-ups 3×8\n• Hoftehev 3×12–15\n• Planke 1×70 sek\n• Bird Dog 2×8\n• Bøyde bein-løft 3×8\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 50–70 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 4×8–12\n• Sittende roing 3×10–12\n• Nedtrekk 3×10–12\n• Balanse 3×25–35 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 2×2\n• Rocking 3×10\n• Beinløft 3×8\n• Planke 1×70 sek\n• Sideplanke 2×25–35 sek\n• Bird Dog 2×8\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 70–100 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 4
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 4×10–12\n• Step-ups 3×8\n• Hoftehev 3×12–15\n• Planke 1×70 sek\n• Bird Dog 2×8\n• Bøyde bein-løft 3×8\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 50–70 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 4×8–12\n• Sittende roing 3×10–12\n• Nedtrekk 3×10–12\n• Balanse 3×25–35 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 2×2\n• Rocking 3×10\n• Beinløft 3×8\n• Planke 1×70 sek\n• Sideplanke 2×25–35 sek\n• Bird Dog 2×8\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 70–100 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 5
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 3×12–14\n• Step-ups 3×10\n• Hoftehev 3×14–17\n• Planke 1×75 sek\n• Bird Dog 2×10\n• Bøyde bein-løft 3×10\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 50–70 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 3×10–14\n• Sittende roing 3×12–14\n• Nedtrekk 3×12–14\n• Balanse 3×30–40 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 2×2\n• Rocking 3×12\n• Beinløft 3×10\n• Planke 1×75 sek\n• Sideplanke 2×30–40 sek\n• Bird Dog 2×10\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 75–105 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 6
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 4×12–14\n• Step-ups 3×10\n• Hoftehev 3×14–17\n• Planke 1×80 sek\n• Bird Dog 2×10\n• Bøyde bein-løft 3×10\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 50–70 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 4×10–14\n• Sittende roing 3×12–14\n• Nedtrekk 3×12–14\n• Balanse 3×30–40 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 3×2\n• Rocking 3×12\n• Beinløft 3×10\n• Planke 1×80 sek\n• Sideplanke 2×30–40 sek\n• Bird Dog 2×10\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 75–105 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 7
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 4×13–15\n• Step-ups 3×11\n• Hoftehev 3×15–18\n• Planke 1×85 sek\n• Bird Dog 2×11\n• Bøyde bein-løft 3×11\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 55–75 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 4×11–15\n• Sittende roing 3×13–15\n• Nedtrekk 3×13–15\n• Balanse 3×35–45 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 3×2\n• Rocking 3×13\n• Beinløft 3×11\n• Planke 1×85 sek\n• Sideplanke 2×35–45 sek\n• Bird Dog 2×11\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 80–110 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ],
+  // UKE 8
+  [
+    {t:"Mandag – ØKT 1: Bein + kjerne\n\nOppvarming: 18 min rolig sykkel\n\n• Beinpress 4×13–15\n• Step-ups 3×11\n• Hoftehev 3×15–18\n• Planke 1×90 sek\n• Bird Dog 2×11\n• Bøyde bein-løft 3×11\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Tirsdag – Landevei 60–75 min", c:"sykkel"},
+    {t:"Onsdag – ØKT 2: Overkropp\n\nOppvarming: 18 min rolig sykkel\n\n• Brystpress 4×11–15\n• Sittende roing 3×13–15\n• Nedtrekk 3×13–15\n• Balanse 3×35–45 sek\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Torsdag – Hvile / rolig sykkel", c:"hvile"},
+    {t:"Fredag – ØKT 3: Gulvstyrke\n\nOppvarming: 18 min rolig sykkel\n\n• Gulv opp/ned 3×2\n• Rocking 3×13\n• Beinløft 3×11\n• Planke 1×90 sek\n• Sideplanke 2×35–45 sek\n• Bird Dog 2×11\n\nNedkjøring: 18 min rolig sykkel", c:"styrke"},
+    {t:"Lørdag – Landevei 90–120 min", c:"sykkel"},
+    {t:"Søndag – Hvile", c:"hvile"}
+  ]
+];
+
+/* ---------------------------------------------------------
+   EXERCISES (uke 1–8) MED UTTØYING
+--------------------------------------------------------- */
+const exercises = [
+  // UKE 1
+  [
+    [
+      "Sykkel 25 min (oppvarming)",
+      "Beinpress 3×10–12",
+      "Step-ups 3×8",
+      "Hoftehev 3×12–15",
+      "Planke 1×60 sek",
+      "Bird Dog 2×8",
+      "Bøyde bein-løft 3×8",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 45–60 min"],
+    [
+      "Sykkel 25 min (oppvarming)",
+      "Brystpress 3×8–12",
+      "Sittende roing 3×10–12",
+      "Nedtrekk 3×10–12",
+      "Balanse 3×20–30 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel 60 min / gå 5 km"],
+    [
+      "Sykkel 25 min (oppvarming)",
+      "Gulv opp/ned 2×2",
+      "Rocking 3×10",
+      "Beinløft 3×8",
+      "Planke 1×60 sek",
+      "Sideplanke 2×20–30 sek",
+      "Bird Dog 2×8",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 60–90 min"],
+    ["Hvile"]
+  ],
+  // UKE 2
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 3×11–13",
+      "Step-ups 3×9",
+      "Hoftehev 3×13–16",
+      "Planke 1×65 sek",
+      "Bird Dog 2×9",
+      "Bøyde bein-løft 3×9",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 50–65 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 3×9–13",
+      "Sittende roing 3×11–13",
+      "Nedtrekk 3×11–13",
+      "Balanse 3×25–35 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 2×2",
+      "Rocking 3×11",
+      "Beinløft 3×9",
+      "Planke 1×65 sek",
+      "Sideplanke 2×25–35 sek",
+      "Bird Dog 2×9",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 65–95 min"],
+    ["Hvile"]
+  ],
+  // UKE 3
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 4×10–12",
+      "Step-ups 3×8",
+      "Hoftehev 3×12–15",
+      "Planke 1×70 sek",
+      "Bird Dog 2×8",
+      "Bøyde bein-løft 3×8",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 50–70 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 4×8–12",
+      "Sittende roing 3×10–12",
+      "Nedtrekk 3×10–12",
+      "Balanse 3×25–35 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 2×2",
+      "Rocking 3×10",
+      "Beinløft 3×8",
+      "Planke 1×70 sek",
+      "Sideplanke 2×25–35 sek",
+      "Bird Dog 2×8",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 70–100 min"],
+    ["Hvile"]
+  ],
+  // UKE 4
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 4×10–12",
+      "Step-ups 3×8",
+      "Hoftehev 3×12–15",
+      "Planke 1×70 sek",
+      "Bird Dog 2×8",
+      "Bøyde bein-løft 3×8",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 50–70 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 4×8–12",
+      "Sittende roing 3×10–12",
+      "Nedtrekk 3×10–12",
+      "Balanse 3×25–35 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 2×2",
+      "Rocking 3×10",
+      "Beinløft 3×8",
+      "Planke 1×70 sek",
+      "Sideplanke 2×25–35 sek",
+      "Bird Dog 2×8",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 70–100 min"],
+    ["Hvile"]
+  ],
+  // UKE 5
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 3×12–14",
+      "Step-ups 3×10",
+      "Hoftehev 3×14–17",
+      "Planke 1×75 sek",
+      "Bird Dog 2×10",
+      "Bøyde bein-løft 3×10",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 50–70 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 3×10–14",
+      "Sittende roing 3×12–14",
+      "Nedtrekk 3×12–14",
+      "Balanse 3×30–40 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 2×2",
+      "Rocking 3×12",
+      "Beinløft 3×10",
+      "Planke 1×75 sek",
+      "Sideplanke 2×30–40 sek",
+      "Bird Dog 2×10",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 75–105 min"],
+    ["Hvile"]
+  ],
+  // UKE 6
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 4×12–14",
+      "Step-ups 3×10",
+      "Hoftehev 3×14–17",
+      "Planke 1×80 sek",
+      "Bird Dog 2×10",
+      "Bøyde bein-løft 3×10",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 50–70 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 4×10–14",
+      "Sittende roing 3×12–14",
+      "Nedtrekk 3×12–14",
+      "Balanse 3×30–40 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 3×2",
+      "Rocking 3×12",
+      "Beinløft 3×10",
+      "Planke 1×80 sek",
+      "Sideplanke 2×30–40 sek",
+      "Bird Dog 2×10",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 75–105 min"],
+    ["Hvile"]
+  ],
+  // UKE 7
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 4×13–15",
+      "Step-ups 3×11",
+      "Hoftehev 3×15–18",
+      "Planke 1×85 sek",
+      "Bird Dog 2×11",
+      "Bøyde bein-løft 3×11",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 55–75 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 4×11–15",
+      "Sittende roing 3×13–15",
+      "Nedtrekk 3×13–15",
+      "Balanse 3×35–45 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 3×2",
+      "Rocking 3×13",
+      "Beinløft 3×11",
+      "Planke 1×85 sek",
+      "Sideplanke 2×35–45 sek",
+      "Bird Dog 2×11",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 80–110 min"],
+    ["Hvile"]
+  ],
+  // UKE 8
+  [
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Beinpress 4×13–15",
+      "Step-ups 3×11",
+      "Hoftehev 3×15–18",
+      "Planke 1×90 sek",
+      "Bird Dog 2×11",
+      "Bøyde bein-løft 3×11",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 60–75 min"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Brystpress 4×11–15",
+      "Sittende roing 3×13–15",
+      "Nedtrekk 3×13–15",
+      "Balanse 3×35–45 sek",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Hvile / rolig sykkel"],
+    [
+      "Sykkel 18 min (oppvarming)",
+      "Gulv opp/ned 3×2",
+      "Rocking 3×13",
+      "Beinløft 3×11",
+      "Planke 1×90 sek",
+      "Sideplanke 2×35–45 sek",
+      "Bird Dog 2×11",
+      "Sykkel 18 min (nedkjøring)",
+      "Uttøying:",
+      "Hoftebøyer 30 sek",
+      "Sete 30 sek",
+      "Hamstring 30 sek",
+      "Legger 20 sek",
+      "Brystrygg åpner 20 sek",
+      "Sidebøy 20 sek",
+      "Rotasjonsmobilitet 20 sek"
+    ],
+    ["Landevei 90–120 min"],
+    ["Hvile"]
+  ]
+];
+
+/* ---------------------------------------------------------
+   KM-SUMMERING
+--------------------------------------------------------- */
+function getWeeklyKmSykkel(week) {
+    let sum = 0;
+    for (let d = 0; d < 7; d++) {
+        const key = `km_sykkel_uke${week}_dag${d}`;
+        const val = parseFloat(localStorage.getItem(key));
+        if (!isNaN(val)) sum += val;
+    }
+    return sum;
+}
+
+function getWeeklyKmGaa(week) {
+    let sum = 0;
+    for (let d = 0; d < 7; d++) {
+        const key = `km_gaa_uke${week}_dag${d}`;
+        const val = parseFloat(localStorage.getItem(key));
+        if (!isNaN(val)) sum += val;
+    }
+    return sum;
+}
+
+/* ---------------------------------------------------------
+   KM-FELT I MODAL
+--------------------------------------------------------- */
+function showKmFields(week, day, text) {
+    const kmBox = document.getElementById("kmFields");
+    kmBox.innerHTML = "";
+
+    const lower = text.toLowerCase();
+
+    const isSykkel = lower.includes("sykkel") || lower.includes("landevei");
+    const isGaa = lower.includes("gå");
+
+    if (!isSykkel && !isGaa) return;
+
+    if (isSykkel) {
+        const key = `km_sykkel_uke${week}_dag${day}`;
+        const stored = localStorage.getItem(key) || "";
+        kmBox.innerHTML += `
+            <label>Km sykkel:
+              <input type="number" step="0.1" id="kmSykkel" value="${stored}">
+            </label>
+        `;
+    }
+
+    if (isGaa) {
+        const key = `km_gaa_uke${week}_dag${day}`;
+        const stored = localStorage.getItem(key) || "";
+        kmBox.innerHTML += `
+            <label>Km gå:
+              <input type="number" step="0.1" id="kmGaa" value="${stored}">
+            </label>
+        `;
+    }
+}
+
+/* ---------------------------------------------------------
+   LOGIKK FOR VISNING
+--------------------------------------------------------- */
+function getCurrentWeek() {
+  const now = new Date();
+  const diff = now - startDate;
+  const days = diff / (1000 * 60 * 60 * 24);
+  const w = Math.floor(days / 7);
+  return Math.max(0, Math.min(7, w));
+}
+
+let manualWeekOffset = 0;
+
+function changeWeek(delta) {
+  manualWeekOffset += delta;
+  if (getCurrentWeek() + manualWeekOffset < 0) manualWeekOffset = -getCurrentWeek();
+  if (getCurrentWeek() + manualWeekOffset > 7) manualWeekOffset = 7 - getCurrentWeek();
+  update();
+}
+
+function getWeek() {
+  return Math.max(0, Math.min(7, getCurrentWeek() + manualWeekOffset));
+}
+
+function getDayIndex(offset = 0) {
+  const today = new Date();
+  let weekday = today.getDay(); // 0 = søndag
+  weekday = (weekday + 6) % 7;  // mandag = 0
+  return (weekday + offset + 7) % 7;
+}
+
+function formatDate(d) {
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
+  const yy = String(d.getFullYear()).slice(-2);
+  return dd + "." + mm + "." + yy;
+}
+
+function updateWeekHeader() {
+  const week = getWeek();
+  const weekStart = new Date(startDate.getTime() + week * 7 * 24 * 60 * 60 * 1000);
+  const weekEnd = new Date(weekStart.getTime() + 6 * 24 * 60 * 60 * 1000);
+  const header = "Uke " + (week + 1) + " (" + formatDate(weekStart) + " – " + formatDate(weekEnd) + ")";
+  document.getElementById("weekHeader").innerText = header;
+}
+
+function updateTitles() {
+  const week = getWeek();
+  const weekStart = new Date(startDate.getTime() + week * 7 * 24 * 60 * 60 * 1000);
+  const todayIndex = getDayIndex(0);
+  const tomorrowIndex = getDayIndex(1);
+
+  const todayDate = new Date(weekStart.getTime() + todayIndex * 24 * 60 * 60 * 1000);
+  const tomorrowDate = new Date(weekStart.getTime() + tomorrowIndex * 24 * 60 * 60 * 1000);
+
+  const weekdays = ["Mandag", "Tirsdag", "Onsdag", "Torsdag", "Fredag", "Lørdag", "Søndag"];
+
+  document.getElementById("todayTitle").innerText =
+    "Dagens økt – " + weekdays[todayIndex] + " " + formatDate(todayDate);
+  document.getElementById("tomorrowTitle").innerText =
+    "Morgendagens økt – " + weekdays[tomorrowIndex] + " " + formatDate(tomorrowDate);
+}
+
+function update() {
+  const week = getWeek();
+  const today = getDayIndex(0);
+  const tomorrow = getDayIndex(1);
+
+  const todayData = weeks[week][today];
+  const tomorrowData = weeks[week][tomorrow];
+
+  const todayBox = document.getElementById("todayBox");
+  const tomorrowBox = document.getElementById("tomorrowBox");
+
+  todayBox.className = "box " + todayData.c;
+  tomorrowBox.className = "box " + tomorrowData.c;
+
+  todayBox.innerText = todayData.t;
+  tomorrowBox.innerText = tomorrowData.t;
+
+  document.getElementById("goalBox").innerText = goalsShort[week];
+  document.getElementById("debugInfo").innerText =
+    "Uke " + (week + 1) + "  |  Dag " + (today + 1);
+
+  updateWeekHeader();
+  updateTitles();
+}
+
+/* ---------------------------------------------------------
+   MÅL-MODAL (inkl. vekt + km)
+--------------------------------------------------------- */
+function openGoalsModal() {
+  const week = getWeek();
+  document.getElementById("goalsWeekText").innerText = weekGoals[week];
+
+  const key = "weight_uke" + week;
+  const stored = localStorage.getItem(key);
+  const weightInput = document.getElementById("weightInput");
+  const status = document.getElementById("weightStatus");
+  const changeEl = document.getElementById("weightChange");
+  const saveBtn = document.getElementById("weightSaveBtn");
+
+  const todayIndex = getDayIndex(0);
+  const isMonday = todayIndex === 0;
+
+  if (stored !== null) {
+    weightInput.value = stored;
+    status.innerText = "Lagret vekt for uke " + (week + 1) + ": " + stored + " kg";
+  } else {
+    weightInput.value = "";
+    status.innerText = "Ingen vekt registrert for denne uken ennå.";
+  }
+
+  if (isMonday && week === getCurrentWeek()) {
+    weightInput.disabled = false;
+    saveBtn.disabled = false;
+    saveBtn.style.opacity = "1";
+    status.innerText += " (kan endres i dag – mandag)";
+  } else {
+    weightInput.disabled = true;
+    saveBtn.disabled = true;
+    saveBtn.style.opacity = "0.5";
+    status.innerText += " (vekt registreres kun på mandager i aktuell uke)";
+  }
+
+  // Vektendring siden start
+  const startWeight = localStorage.getItem("weight_start");
+  changeEl.innerText = "";
+  changeEl.className = "";
+  if (startWeight && stored) {
+    const diff = parseFloat(stored) - parseFloat(startWeight);
+    if (!isNaN(diff) && diff !== 0) {
+      if (diff < 0) {
+        changeEl.innerText = "⬇️ " + Math.abs(diff).toFixed(1) + " kg siden start";
+        changeEl.className = "weight-down";
+      } else {
+        changeEl.innerText = "⬆️ " + diff.toFixed(1) + " kg siden start";
+        changeEl.className = "weight-up";
+      }
+    } else if (!isNaN(diff) && diff === 0) {
+      changeEl.innerText = "Uendret vekt siden start";
+      changeEl.className = "";
+    }
+  }
+
+  // Km denne uken
+  const kmSykkel = getWeeklyKmSykkel(week);
+  const kmGaa = getWeeklyKmGaa(week);
+  document.getElementById("kmWeek").innerText =
+    "Sykkel: " + kmSykkel.toFixed(1) + " km  |  Gå: " + kmGaa.toFixed(1) + " km";
+
+  document.getElementById("goalsOverlay").style.display = "flex";
+}
+
+function closeGoalsModal(e) {
+  document.getElementById("goalsOverlay").style.display = "none";
+}
+
+function saveWeight() {
+  const week = getWeek();
+  const key = "weight_uke" + week;
+  const val = document.getElementById("weightInput").value;
+  const status = document.getElementById("weightStatus");
+  const changeEl = document.getElementById("weightChange");
+
+  if (val !== "") {
+    localStorage.setItem(key, val);
+    status.innerText = "Lagret vekt for uke " + (week + 1) + ": " + val + " kg";
+
+    if (!localStorage.getItem("weight_start")) {
+      localStorage.setItem("weight_start", val);
+    }
+
+    const startWeight = localStorage.getItem("weight_start");
+    if (startWeight) {
+      const diff = parseFloat(val) - parseFloat(startWeight);
+      if (!isNaN(diff) && diff !== 0) {
+        if (diff < 0) {
+          changeEl.innerText = "⬇️ " + Math.abs(diff).toFixed(1) + " kg siden start";
+          changeEl.className = "weight-down";
+        } else {
+          changeEl.innerText = "⬆️ " + diff.toFixed(1) + " kg siden start";
+          changeEl.className = "weight-up";
+        }
+      } else if (!isNaN(diff) && diff === 0) {
+        changeEl.innerText = "Uendret vekt siden start";
+        changeEl.className = "";
+      }
+    }
+  }
+}
+
+/* ---------------------------------------------------------
+   ØVELSESMODAL + CHECKBOXER + KM-LAGRING
+--------------------------------------------------------- */
+function sanitizeId(text) {
+  return text.toLowerCase()
+    .replace(/æ/g, "ae")
+    .replace(/ø/g, "o")
+    .replace(/å/g, "a")
+    .replace(/[^a-z0-9]+/g, "_");
+}
+
+function openExerciseModal() {
+  const week = getWeek();
+  const day = getDayIndex(0);
+  const list = exercises[week][day];
+  const container = document.getElementById("exerciseList");
+  container.innerHTML = "";
+
+  list.forEach((name) => {
+    const id = "done_uke" + week + "_dag" + day + "_" + sanitizeId(name);
+    const label = document.createElement("label");
+    const cb = document.createElement("input");
+    cb.type = "checkbox";
+    cb.checked = localStorage.getItem(id) === "1";
+    cb.onchange = () => {
+      if (cb.checked) localStorage.setItem(id, "1");
+      else localStorage.removeItem(id);
+    };
+    const span = document.createElement("span");
+    span.innerText = name;
+    label.appendChild(cb);
+    label.appendChild(span);
+    container.appendChild(label);
+  });
+
+  // Km-felt basert på dagens tekst
+  const todayData = weeks[week][day];
+  showKmFields(week, day, todayData.t);
+
+  document.getElementById("exerciseOverlay").style.display = "flex";
+}
+
+function closeExerciseModal(e) {
+  const week = getWeek();
+  const day = getDayIndex(0);
+
+  // Lagre km sykkel
+  const kmSykkelInput = document.getElementById("kmSykkel");
+  if (kmSykkelInput) {
+    const val = kmSykkelInput.value;
+    const key = `km_sykkel_uke${week}_dag${day}`;
+    if (val !== "") localStorage.setItem(key, val);
+    else localStorage.removeItem(key);
+  }
+
+  // Lagre km gå
+  const kmGaaInput = document.getElementById("kmGaa");
+  if (kmGaaInput) {
+    const val = kmGaaInput.value;
+    const key = `km_gaa_uke${week}_dag${day}`;
+    if (val !== "") localStorage.setItem(key, val);
+    else localStorage.removeItem(key);
+  }
+
+  // Sjekk om alle øvelser er fullført
+  const list = exercises[week][day];
+  let allExercisesDone = true;
+
+  list.forEach((name) => {
+    const id = "done_uke" + week + "_dag" + day + "_" + sanitizeId(name);
+    if (localStorage.getItem(id) !== "1") {
+      allExercisesDone = false;
+    }
+  });
+
+  // Sjekk om km-felt er fylt ut (hvis de finnes)
+  let kmOk = true;
+
+  if (kmSykkelInput && kmSykkelInput.value === "") kmOk = false;
+  if (kmGaaInput && kmGaaInput.value === "") kmOk = false;
+
+  // Vis kun hvis alt er fullført, og ikke vist før denne dagen
+  const doneKey = `all_done_uke${week}_dag${day}`;
+
+  if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
+    localStorage.setItem(doneKey, "1");
+    const msg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
+    showToast(msg);
+  }
+
+  document.getElementById("exerciseOverlay").style.display = "none";
+}
+
+/* ---------------------------------------------------------
+   INIT
+--------------------------------------------------------- */
+update();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
+</script>
+
+</body>
+</html>
