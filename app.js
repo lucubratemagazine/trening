@@ -95,7 +95,7 @@ function updateTitles() {
 }
 
 /* ---------------------------------------------------------
-   KM-FELT (DEN MANGLENDE FUNKSJONEN)
+   KM-FELT
 --------------------------------------------------------- */
 function showKmFields(week, day, text) {
   const kmBox = document.getElementById("kmFields");
@@ -103,7 +103,6 @@ function showKmFields(week, day, text) {
 
   const lower = text.toLowerCase();
 
-  // Sykkel
   if (lower.includes("landevei") || lower.includes("sykkel")) {
     const key = `km_sykkel_uke${week}_dag${day}`;
     const stored = localStorage.getItem(key) || "";
@@ -113,7 +112,6 @@ function showKmFields(week, day, text) {
     `;
   }
 
-  // Gå
   if (lower.includes("gå")) {
     const key = `km_gaa_uke${week}_dag${day}`;
     const stored = localStorage.getItem(key) || "";
@@ -325,34 +323,26 @@ function closeExerciseModal() {
 
   const doneKey = `all_done_uke${week}_dag${day}`;
 
- if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
+  if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
     localStorage.setItem(doneKey, "1");
 
-    // Logg historikk
-    const week = getWeek();
-    const day = getDayIndex(0);
+    // ⭐ HISTORIKK-LOGGING
     const todayData = weeks[week][day];
 
     const entry = {
-        week: week,
-        day: day,
-        weekday: ["Man","Tir","Ons","Tor","Fre","Lør","Søn"][day],
-        date: new Date().toLocaleDateString("no-NO"),
-        type: todayData.c,
-        kmSykkel: kmSykkelInput?.value || null,
-        kmGaa: kmGaaInput?.value || null
+      week: week,
+      day: day,
+      weekday: ["Man","Tir","Ons","Tor","Fre","Lør","Søn"][day],
+      date: new Date().toLocaleDateString("no-NO"),
+      type: todayData.c,
+      kmSykkel: kmSykkelInput?.value || null,
+      kmGaa: kmGaaInput?.value || null
     };
 
     let log = JSON.parse(localStorage.getItem("history_log") || "[]");
     log.push(entry);
     localStorage.setItem("history_log", JSON.stringify(log));
 
-    // Toast
-    const msg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
-    showToast(msg);
-}
-
-    localStorage.setItem(doneKey, "1");
     const msg = positiveMessages[Math.floor(Math.random() * positiveMessages.length)];
     showToast(msg);
   }
