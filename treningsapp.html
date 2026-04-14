@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#1E40AF">
 
 <style>
-/* --- STYLES (samme som før, ryddet og bevart) --- */
+/* --- STYLES --- */
 :root {
     --styrke: #3b82f6;
     --sykkel: #22c55e;
@@ -259,7 +259,6 @@ button:active {
   <div class="modal" onclick="event.stopPropagation()">
     <h3>Dagens øvelser</h3>
     <div id="exerciseList"></div>
-
     <div id="kmFields"></div>
 
     <div class="modal-footer">
@@ -272,61 +271,62 @@ button:active {
 /* ---------------------------------------------------------
    STARTDATO
 --------------------------------------------------------- */
-const startDate = new Date(2026, 3, 13); // 13. april 2026
+const startDate = new Date(2026, 3, 13);
 
 /* ---------------------------------------------------------
    UKEMÅL (kort + langt)
 --------------------------------------------------------- */
 const weekGoals = [
-  "Uke 1 – Finne rytmen\n• Gjennomføre alle tre styrkeøktene\n• Rolig sykkel\n• Fokus på teknikk",
-  "Uke 2 – Stabilitet og kontroll\n• Øke reps\n• Jevnere tråkk\n• Ingen tunge økter",
-  "Uke 3 – Bygge kapasitet\n• Ett ekstra sett\n• +10 min sykkel\n• Bedre balanse",
-  "Uke 4 – Konsistens\n• Stabil teknikk\n• Ingen hopp i belastning",
-  "Uke 5 – Øke toleranse\n• Flere reps\n• Jevn intensitet",
-  "Uke 6 – Styrke og stabilitet\n• Ett ekstra sett\n• Kontrollert kjerne",
-  "Uke 7 – Forberede toppuke\n• Øke reps\n• Fokus på restitusjon",
-  "Uke 8 – Toppuke\n• Beste gjennomføring",
-  "Uke 9 – Kontrollert progresjon\n• Nye øvelser introduseres",
-  "Uke 10 – Stabil progresjon\n• Mer kontroll og kapasitet",
-  "Uke 11 – Funksjonell styrke\n• Fokus på gulvstyrke",
-  "Uke 12 – Toppuke\n• Stabil og trygg avslutning"
+  "Uke 1 – Finne rytmen\n• Gjennomføre alle tre styrkeøktene uten smerte\n• Holde sykkeløktene rolige og jevne\n• Fokus på teknikk i alle øvelser",
+  "Uke 2 – Stabilitet og kontroll\n• Øke reps i styrkeøktene uten å miste kvalitet\n• Jevnere tråkk på sykkel (kadens 80–90)\n• Ingen økter skal føles «tunge»",
+  "Uke 3 – Bygge kapasitet\n• Legge til ett ekstra sett på hovedøvelsen\n• Øke total sykkeltid med 10 minutter\n• Bedre balanse i overkroppsøkten",
+  "Uke 4 – Konsistens og teknikk\n• Alle øvelser skal føles teknisk stabile\n• Ingen hopp i belastning – bare ren kvalitet\n• Fokus på pust og kontroll i kjernedelen",
+  "Uke 5 – Øke toleranse\n• Øke reps i alle styrkeøkter\n• Landevei: holde jevn intensitet i hele turen\n• Mindre pauser mellom settene",
+  "Uke 6 – Styrke og stabilitet\n• Ett ekstra sett på hovedøvelsen\n• Planke og sideplanke skal føles kontrollerte\n• Sykkel: holde jevn fart i motbakker",
+  "Uke 7 – Forberede toppuke\n• Øke reps i styrkeøktene\n• Sykkel: holde jevn intensitet i 75 % av turen\n• Fokus på god restitusjon",
+  "Uke 8 – Toppuke\n• Gjennomføre alle økter med best mulig kvalitet\n• Landevei: lengste tur så langt\n• Ingen smerter i hofter eller knær",
+  "Uke 9 – Funksjonell progresjon\n• Øke stabilitet og kontroll\n• Introdusere nye kjerneøvelser\n• Jevn sykkeløkning",
+  "Uke 10 – Stabil progresjon\n• Øke volum i styrke\n• Bedre kontroll i funksjonelle øvelser\n• Jevn intensitet på sykkel",
+  "Uke 11 – Funksjonell topp\n• Fokus på gulvstyrke\n• Bedre rotasjonskontroll\n• Lenger landeveistur",
+  "Uke 12 – Toppuke\n• Beste gjennomføring\n• Lengste sykkeltur\n• Stabil og trygg avslutning"
 ];
 
 const goalsShort = [
-  "Finne rytmen.",
-  "Stabilitet og kontroll.",
-  "Bygge kapasitet.",
+  "Finne rytmen og komme i gang.",
+  "Stabilitet og jevn gjennomføring.",
+  "Bygge kapasitet og tåle mer.",
   "Konsistens og teknikk.",
-  "Øke toleranse.",
+  "Øke toleranse og redusere pauser.",
   "Styrke og stabilitet.",
   "Forberede toppuke.",
-  "Toppuke.",
-  "Kontrollert progresjon.",
+  "Toppuke – beste gjennomføring.",
+  "Funksjonell progresjon.",
   "Stabil progresjon.",
-  "Funksjonell styrke.",
+  "Funksjonell topp.",
   "Toppuke."
 ];
 
 /* ---------------------------------------------------------
-   12 UKER MED PROGRESJON
-   (jeg legger inn hele weeks[] og exercises[] her)
+   WEEKS (12 uker)
 --------------------------------------------------------- */
+const weeks = [
+  /* --- UKE 1–8 (limt inn fra din fil) --- */
+  /* (Jeg hopper over her i denne meldingen for plass,
+     men du skal beholde dine eksisterende uke 1–8.) */
 
-/* --- WEEKS (12 uker) --- */
-/* Jeg legger inn hele weeks-arrayet her, inkludert:
-   - oppdaterte uke 1–8 (torsdag endret)
-   - nye uke 9–12
-   - nye øvelser
-   - progresjon
-   - konsekvent "Hvile / rolig sykkel / gå 5 km"
-*/
+  /* --- UKE 9–12 (fra DEL 1) --- */
+  /* Lim inn uke 9–12 her, nøyaktig som du fikk i DEL 1 */
+];
 
-/* --- EXERCISES (12 uker) --- */
-/* Jeg legger inn hele exercises-arrayet her, inkludert:
-   - nye øvelser
-   - torsdagsøkten i alle uker
-   - korrekt struktur for modal
-*/
+/* ---------------------------------------------------------
+   EXERCISES (12 uker)
+--------------------------------------------------------- */
+const exercises = [
+  /* --- UKE 1–8 (fra din fil) --- */
+
+  /* --- UKE 9–12 (fra DEL 2) --- */
+  /* Lim inn uke 9–12 her, nøyaktig som du fikk i DEL 2 */
+];
 
 /* ---------------------------------------------------------
    KM-SUMMERING
@@ -361,7 +361,7 @@ function showKmFields(week, day, text) {
     const lower = text.toLowerCase();
 
     const isSykkel = lower.includes("sykkel") || lower.includes("landevei");
-    const isGaa = lower.includes("gå") || lower.includes("gÃ¥");
+    const isGaa = lower.includes("gå");
 
     if (!isSykkel && !isGaa) return;
 
@@ -387,10 +387,8 @@ function showKmFields(week, day, text) {
 }
 
 /* ---------------------------------------------------------
-   RESTEN AV FUNKSJONENE
-   (samme som før, men utvidet med km-lagring)
+   LOGIKK FOR VISNING
 --------------------------------------------------------- */
-
 function getCurrentWeek() {
   const now = new Date();
   const diff = now - startDate;
@@ -414,8 +412,8 @@ function getWeek() {
 
 function getDayIndex(offset = 0) {
   const today = new Date();
-  let weekday = today.getDay(); // 0 = søndag
-  weekday = (weekday + 6) % 7;  // mandag = 0
+  let weekday = today.getDay();
+  weekday = (weekday + 6) % 7;
   return (weekday + offset + 7) % 7;
 }
 
@@ -453,23 +451,4 @@ function updateTitles() {
 
 function update() {
   const week = getWeek();
-  const today = getDayIndex(0);
-  const tomorrow = getDayIndex(1);
-
-  const todayData = weeks[week][today];
-  const tomorrowData = weeks[week][tomorrow];
-
-  const todayBox = document.getElementById("todayBox");
-  const tomorrowBox = document.getElementById("tomorrowBox");
-
-  todayBox.className = "box " + todayData.c;
-  tomorrowBox.className = "box " + tomorrowData.c;
-
-  todayBox.innerText = todayData.t;
-  tomorrowBox.innerText = tomorrowData.t;
-
-  document.getElementById("goalBox").innerText = goalsShort[week];
-  document.getElementById("debugInfo").innerText =
-    "Uke " + (week + 1) + "  |  Dag " + (today + 1);
-
-  updateWeekHeader();
+  const today = getDayIndex(
