@@ -1,25 +1,15 @@
 /* ---------------------------------------------------------
-   EXERCISES (uke 1–8) – kompakt og trygg versjon
-   Samme innhold, men kortere og uten risiko for avkutting.
+   EXERCISES (uke 1–8) – ren og konsistent versjon
 --------------------------------------------------------- */
 
-const stretch = [
-  "Uttøying:",
-  "Hoftebøyer 30 sek",
-  "Sete 30 sek",
-  "Hamstring 30 sek",
-  "Legger 20 sek",
-  "Brystrygg åpner 20 sek",
-  "Sidebøy 20 sek",
-  "Rotasjonsmobilitet 20 sek"
-];
+const stretch = ["Uttøying"];   // én øvelse, får checkbox automatisk
 
 function styrke(oppv, list, nedkj) {
   return [
     `Sykkel ${oppv} min (oppvarming)`,
     ...list,
-    `Sykkel ${nedkj} min (nedkjøring)`,
-    ...stretch
+    ...stretch,                     // Uttøying kommer her
+    `Sykkel ${nedkj} min (nedkjøring)`
   ];
 }
 
