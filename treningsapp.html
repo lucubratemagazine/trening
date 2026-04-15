@@ -17,39 +17,44 @@
 
 <body>
 
-<h1>Treningsplan</h1>
-<div id="weekHeader"></div>
+<div class="app-container">
 
-<div class="btn-row">
-    <button onclick="changeWeek(-1)">Forrige uke</button>
-    <button onclick="changeWeek(1)">Neste uke</button>
-</div>
+    <h1>Treningsplan</h1>
+    <div id="weekHeader"></div>
 
-<div class="header-row">
-    <h2 id="todayTitle">Dagens økt</h2>
-    <button class="small-btn" onclick="openExerciseModal()">Fullfør øvelser</button>
-</div>
-<div class="box" id="todayBox">Laster...</div>
+    <div class="btn-row">
+        <button onclick="changeWeek(-1)">Forrige uke</button>
+        <button onclick="changeWeek(1)">Neste uke</button>
+    </div>
 
-<h2 id="tomorrowTitle">Morgendagens økt</h2>
-<div class="box" id="tomorrowBox">Laster...</div>
+    <div class="header-row">
+        <h2 id="todayTitle">Dagens økt</h2>
+        <button class="small-btn" onclick="openExerciseModal()">Fullfør øvelser</button>
+    </div>
 
-<div class="header-row">
-    <h2>Ukemål</h2>
-    <button class="small-btn" onclick="openGoalsModal()">🎯 Mål</button>
-</div>
+    <div class="box" id="todayBox">Laster...</div>
 
-<div class="btn-row">
-    <button onclick="window.location.href='historikk.html'">Historikk</button>
-</div>
+    <h2 id="tomorrowTitle">Morgendagens økt</h2>
+    <div class="box" id="tomorrowBox">Laster...</div>
 
-<div class="box" id="goalBox">Laster...</div>
+    <div class="header-row">
+        <h2>Ukemål</h2>
+        <button class="small-btn" onclick="openGoalsModal()">🎯 Mål</button>
+    </div>
 
-<div class="info" id="debugInfo"></div>
+    <div class="btn-row">
+        <button onclick="window.location.href='historikk.html'">Historikk</button>
+    </div>
+
+    <div class="box" id="goalBox">Laster...</div>
+
+    <div class="info" id="debugInfo"></div>
+
+</div> <!-- slutt på app-container -->
 
 <!-- Mål-modal -->
 <div class="modal-overlay" id="goalsOverlay" onclick="closeGoalsModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal-content" onclick="event.stopPropagation()">
     <h3>Ukemål og langsiktige mål</h3>
 
     <section>
@@ -78,7 +83,7 @@
 
 <!-- Øvelses-modal -->
 <div class="modal-overlay" id="exerciseOverlay" onclick="closeExerciseModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal-content" onclick="event.stopPropagation()">
     <h3>Dagens øvelser</h3>
     <div id="exerciseList"></div>
     <div id="kmFields"></div>
@@ -91,7 +96,7 @@
 
 <!-- ADMIN-MODAL -->
 <div class="modal-overlay" id="adminOverlay" onclick="closeAdminModal(event)">
-  <div class="modal" onclick="event.stopPropagation()">
+  <div class="modal-content" onclick="event.stopPropagation()">
     <h3>Manuell registrering</h3>
 
     <label>Uke:</label>
@@ -117,12 +122,14 @@
 
     <label>Km gå:</label>
     <input type="number" id="adminKmGaa" step="0.1">
-<hr>
-<h3>Vektregistrering</h3>
-<label for="adminWeight">Vekt (kg):</label>
-<input type="number" id="adminWeight" step="0.1" placeholder="f.eks. 82.4">
 
-<button onclick="saveAdminWeight()" class="adminSaveBtn">Lagre vekt</button>
+    <hr>
+
+    <h3>Vektregistrering</h3>
+    <label for="adminWeight">Vekt (kg):</label>
+    <input type="number" id="adminWeight" step="0.1" placeholder="f.eks. 82.4">
+
+    <button onclick="saveAdminWeight()" class="adminSaveBtn">Lagre vekt</button>
 
     <div class="modal-footer">
       <button onclick="saveAdminEntry()">Lagre</button>
