@@ -144,7 +144,6 @@ function getWeeklyKmGaa(week) {
   }
   return sum;
 }
-
 /* ---------------------------------------------------------
    MÅL-MODAL
 --------------------------------------------------------- */
@@ -373,7 +372,7 @@ function update() {
 }
 
 /* ---------------------------------------------------------
-   AUTO-SCROLL TIL DAGENS ØKT
+   AUTO-SCROLL
 --------------------------------------------------------- */
 function scrollToToday() {
   const el = document.getElementById("todayTitle");
@@ -383,7 +382,7 @@ function scrollToToday() {
 }
 
 /* ---------------------------------------------------------
-   SVEIP-NAVIGASJON MELLOM UKER
+   SVEIP-NAVIGASJON
 --------------------------------------------------------- */
 let touchStartX = null;
 
@@ -405,7 +404,7 @@ document.addEventListener("touchend", (e) => {
 });
 
 /* ---------------------------------------------------------
-   ADMIN-MODAL (skjult)
+   ADMIN-MODAL
 --------------------------------------------------------- */
 let adminTapCount = 0;
 document.getElementById("weekHeader").addEventListener("click", () => {
@@ -427,6 +426,9 @@ function openAdminModal() {
 }
 
 function closeAdminModal() {
+  document.getElementById("adminOverlay").style.display = "none";
+}
+
 function loadAdminExercises() {
   const week = parseInt(document.getElementById("adminWeek").value) - 1;
   const day = parseInt(document.getElementById("adminDay").value);
@@ -446,6 +448,14 @@ function loadAdminExercises() {
   });
 }
 
+document.getElementById("adminWeek").addEventListener("change", loadAdminExercises);
+document.getElementById("adminDay").addEventListener("change", loadAdminExercises);
+
+/* ---------------------------------------------------------
+   LAGRE MANUELL REGISTRERING
+--------------------------------------------------------- */
+function saveAdminEntry() {
+  const week = parseInt(document.getElementById("adminWeek").value) - 1;
   const day = parseInt(document.getElementById("adminDay").value);
 
   const list = exercises[week][day];
@@ -503,4 +513,4 @@ document.addEventListener("DOMContentLoaded", () => {
   update();
   scrollToToday();
 });
-                                            
+
