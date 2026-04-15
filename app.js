@@ -427,15 +427,11 @@ function openAdminModal() {
 }
 
 function closeAdminModal() {
-  document.getElementById("adminOverlay").style.display = "none";
-}
-
 function loadAdminExercises() {
   const week = parseInt(document.getElementById("adminWeek").value) - 1;
   const day = parseInt(document.getElementById("adminDay").value);
 
   const list = exercises[week][day];
-  const container = document.getElementById("adminExercises
   const container = document.getElementById("adminExercises");
   container.innerHTML = "";
 
@@ -450,14 +446,6 @@ function loadAdminExercises() {
   });
 }
 
-document.getElementById("adminWeek").addEventListener("change", loadAdminExercises);
-document.getElementById("adminDay").addEventListener("change", loadAdminExercises);
-
-/* ---------------------------------------------------------
-   LAGRE MANUELL REGISTRERING
---------------------------------------------------------- */
-function saveAdminEntry() {
-  const week = parseInt(document.getElementById("adminWeek").value) - 1;
   const day = parseInt(document.getElementById("adminDay").value);
 
   const list = exercises[week][day];
