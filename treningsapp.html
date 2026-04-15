@@ -6,15 +6,12 @@
 
     <title>Treningsplan</title>
 
-    <!-- PWA / fullskjerm -->
+    <!-- PWA -->
     <meta name="theme-color" content="#1E40AF">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-
-    <!-- Manifest -->
     <link rel="manifest" href="manifest.json">
 
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
@@ -92,13 +89,47 @@
   </div>
 </div>
 
+<!-- ADMIN-MODAL -->
+<div class="modal-overlay" id="adminOverlay" onclick="closeAdminModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3>Manuell registrering</h3>
+
+    <label>Uke:</label>
+    <input type="number" id="adminWeek" min="1" max="8">
+
+    <label>Dag:</label>
+    <select id="adminDay">
+      <option value="0">Mandag</option>
+      <option value="1">Tirsdag</option>
+      <option value="2">Onsdag</option>
+      <option value="3">Torsdag</option>
+      <option value="4">Fredag</option>
+      <option value="5">Lørdag</option>
+      <option value="6">Søndag</option>
+    </select>
+
+    <h4>Øvelser:</h4>
+    <div id="adminExercises"></div>
+
+    <h4>Kilometer:</h4>
+    <label>Km sykkel:</label>
+    <input type="number" id="adminKmSykkel" step="0.1">
+
+    <label>Km gå:</label>
+    <input type="number" id="adminKmGaa" step="0.1">
+
+    <div class="modal-footer">
+      <button onclick="saveAdminEntry()">Lagre</button>
+      <button onclick="closeAdminModal()">Lukk</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div id="toast"></div>
 
-<!-- Flytende knapp for "Dagens økt" -->
 <button id="fabToday" onclick="scrollToToday()">Dagens økt</button>
 
-<!-- JS-filer -->
 <script src="messages.js"></script>
 <script src="data_weeks.js"></script>
 <script src="data_exercises.js"></script>
