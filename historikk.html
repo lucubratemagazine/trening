@@ -6,27 +6,57 @@
 
     <title>Historikk</title>
 
-    <!-- PWA / fullskjerm -->
     <meta name="theme-color" content="#1E40AF">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
 
-    <!-- Manifest -->
-    <link rel="manifest" href="manifest.json">
-
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Historikk</h1>
+<div class="app-container">
 
-<div id="historyContainer"></div>
+    <h1>Historikk</h1>
 
-<div class="btn-row">
-    <button onclick="window.location.href='treningsapp.html'">Tilbake</button>
+    <div class="btn-row">
+        <button onclick="window.location.href='treningsapp.html'">Tilbake</button>
+    </div>
+
+    <h2>Fullførte økter</h2>
+    <div id="historyList">Laster...</div>
+
+</div> <!-- slutt på app-container -->
+
+<!-- Modal for detaljer om en dag -->
+<div class="modal-overlay" id="historyOverlay" onclick="closeHistoryModal(event)">
+  <div class="modal-content" onclick="event.stopPropagation()">
+    <h3 id="historyModalTitle">Detaljer</h3>
+
+    <div id="historyModalContent"></div>
+
+    <div class="modal-footer">
+      <button onclick="closeHistoryModal()">Lukk</button>
+    </div>
+  </div>
 </div>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script src="messages.js"></script>
+<script src="data_weeks.js"></script>
+<script src="data_exercises.js"></script>
+<script src="app.js"></script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+</script>
+
+</body>
+</html>
 
 <script src="history.js"></script>
 
