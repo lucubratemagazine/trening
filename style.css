@@ -234,7 +234,7 @@ button:active {
     color: #2f855a;
 }
 
-/* FARGER (samme som appen) */
-.styrke { background-color: #2b6cb0 !important; }
-.sykkel { background-color: #c53030 !important; }
-.hvile  { background-color: #2f855a !important; }
+/* Farget toppstripe i historikk */
+.history-top.styrke { background-color: #2b6cb0; }
+.history-top.sykkel { background-color: #c53030; }
+.history-top.hvile  { background-color: #2f855a; }
