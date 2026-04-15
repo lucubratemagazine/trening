@@ -422,6 +422,11 @@ function openAdminModal() {
   document.getElementById("adminDay").value = getDayIndex(0);
 
   loadAdminExercises();
+
+  const w = parseInt(document.getElementById("adminWeek").value) - 1;
+  document.getElementById("adminWeight").value =
+    localStorage.getItem("weight_uke" + w) || "";
+
   document.getElementById("adminOverlay").style.display = "flex";
 }
 
@@ -448,13 +453,42 @@ function loadAdminExercises() {
   });
 }
 
-document.getElementById("adminWeek").addEventListener("change", loadAdminExercises);
+document.getElementById("adminWeek").addEventListener("change", () => {
+  loadAdminExercises();
+  const week = parseInt(document.getElementById("adminWeek").value) - 1;
+  document.getElementById("adminWeight").value =
+    localStorage.getItem("weight_uke" + week) || "";
+});
+
 document.getElementById("adminDay").addEventListener("change", loadAdminExercises);
 
 /* ---------------------------------------------------------
    LAGRE MANUELL REGISTRERING
 --------------------------------------------------------- */
 function saveAdminEntry() {
+  const week = parseInt(document.getElementById("adminWeek").value) - 1;
+  const day = parseInt(document.getElementById("adminDay").value);
+
+  const list = exercises[week][day];
+
+  list.forEach(name => {
+    const id = "done_uke" + week + "_dag" + day + "_" + sanitizeId(name);
+    const cb = document.getElementById("admin_" + sanitizeId(name));
+    if (cb.checked) localStorage.setItem(id, "1");
+    else localStorage.removeItem(id);
+  });
+
+  const kmS = document.getElementById("adminKmSykkel").value;
+  const kmG = document.getElementById("adminKmGaa").value;
+
+  if (kmS !== "") localStorage.setItem(`km_sykkel_uke${week}_dag${day}`, kmS);
+  if (kmG !== "") localStorage.setItem(`km_gaa_uke${week}_dag${day}`, kmG);
+
+  localStorage.setItem(`all_done_uke${week}_dag${day}`, "1");
+
+  showToast("Økt lagret");
+}
+
 function saveAdminWeight() {
   const week = parseInt(document.getElementById("adminWeek").value) - 1;
   const weight = document.getElementById("adminWeight").value;
@@ -467,53 +501,11 @@ function saveAdminWeight() {
   const key = "weight_uke" + week;
   localStorage.setItem(key, weight);
 
-  // Sett startvekt hvis den ikke finnes
   if (!localStorage.getItem("weight_start")) {
     localStorage.setItem("weight_start", weight);
   }
 
   showToast("Vekt lagret for uke " + (week + 1));
-}
-  
-   const week = parseInt(document.getElementById("adminWeek").value) - 1;
-  const day = parseInt(document.getElementById("adminDay").value);
-
-  const list = exercises[week][day];
-
-  // Lagre øvelser
-  list.forEach(name => {
-    const id = "done_uke" + week + "_dag" + day + "_" + sanitizeId(name);
-    const cb = document.getElementById("admin_" + sanitizeId(name));
-    if (cb.checked) localStorage.setItem(id, "1");
-    else localStorage.removeItem(id);
-  });
-
-  // Lagre km
-  const kmS = document.getElementById("adminKmSykkel").value;
-  const kmG = document.getElementById("adminKmGaa").value;
-
-  if (kmS !== "") localStorage.setItem(`km_sykkel_uke${week}_dag${day}`, kmS);
-  if (kmG !== "") localStorage.setItem(`km_gaa_uke${week}_dag${day}`, kmG);
-
-  // Marker som fullført
-  localStorage.setItem(`all_done_uke${week}_dag${day}`, "1");
-
-  // Legg inn historikk
-  let log = JSON.parse(localStorage.getItem("history_log") || "[]");
-  log.push({
-    week: week,
-    day: day,
-    weekday: ["Man","Tir","Ons","Tor","Fre","Lør","Søn"][day],
-    date: new Date().toLocaleDateString("no-NO"),
-    type: weeks[week][day].c,
-    kmSykkel: kmS || null,
-    kmGaa: kmG || null
-  });
-  localStorage.setItem("history_log", JSON.stringify(log));
-
-  closeAdminModal();
-  update();
-  showToast("Økt registrert manuelt");
 }
 
 /* ---------------------------------------------------------
@@ -533,4 +525,3 @@ document.addEventListener("DOMContentLoaded", () => {
   update();
   scrollToToday();
 });
-
