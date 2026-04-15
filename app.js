@@ -201,11 +201,6 @@ function openGoalsModal() {
     }
   }
 
-  const kmSykkel = getWeeklyKmSykkel(week);
-  const kmGaa = getWeeklyKmGaa(week);
-  document.getElementById("kmWeek").innerText =
-    "Sykkel: " + kmSykkel.toFixed(1) + " km  |  Gå: " + kmGaa.toFixed(1) + " km";
-
   document.getElementById("goalsOverlay").style.display = "flex";
 }
 
@@ -326,7 +321,6 @@ function closeExerciseModal() {
   if (allExercisesDone && kmOk && !localStorage.getItem(doneKey)) {
     localStorage.setItem(doneKey, "1");
 
-    // ⭐ HISTORIKK-LOGGING
     const todayData = weeks[week][day];
 
     const entry = {
@@ -379,7 +373,41 @@ function update() {
 }
 
 /* ---------------------------------------------------------
+   AUTO-SCROLL TIL DAGENS ØKT
+--------------------------------------------------------- */
+function scrollToToday() {
+  const el = document.getElementById("todayTitle");
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+/* ---------------------------------------------------------
+   SVEIP-NAVIGASJON MELLOM UKER
+--------------------------------------------------------- */
+let touchStartX = null;
+
+document.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 1) {
+    touchStartX = e.touches[0].clientX;
+  }
+});
+
+document.addEventListener("touchend", (e) => {
+  if (touchStartX === null) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  touchStartX = null;
+
+  if (Math.abs(dx) < 50) return;
+
+  if (dx < 0) changeWeek(1);
+  else changeWeek(-1);
+});
+
+/* ---------------------------------------------------------
    INIT
 --------------------------------------------------------- */
-update();
-
+document.addEventListener("DOMContentLoaded", () => {
+  update();
+  scrollToToday();
+});
