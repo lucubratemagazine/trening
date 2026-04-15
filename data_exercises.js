@@ -310,3 +310,4 @@ const exercises = [
     ["Hvile"]
   ]
 ];
+
