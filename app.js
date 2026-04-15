@@ -405,9 +405,114 @@ document.addEventListener("touchend", (e) => {
 });
 
 /* ---------------------------------------------------------
+   ADMIN-MODAL (skjult)
+--------------------------------------------------------- */
+let adminTapCount = 0;
+document.getElementById("weekHeader").addEventListener("click", () => {
+  adminTapCount++;
+  if (adminTapCount >= 5) {
+    adminTapCount = 0;
+    openAdminModal();
+  }
+  setTimeout(() => adminTapCount = 0, 1500);
+});
+
+function openAdminModal() {
+  const week = getWeek();
+  document.getElementById("adminWeek").value = week + 1;
+  document.getElementById("adminDay").value = getDayIndex(0);
+
+  loadAdminExercises();
+  document.getElementById("adminOverlay").style.display = "flex";
+}
+
+function closeAdminModal() {
+  document.getElementById("adminOverlay").style.display = "none";
+}
+
+function loadAdminExercises() {
+  const week = parseInt(document.getElementById("adminWeek").value) - 1;
+  const day = parseInt(document.getElementById("adminDay").value);
+
+  const list = exercises[week][day];
+  const container = document.getElementById("adminExercises
+  const container = document.getElementById("adminExercises");
+  container.innerHTML = "";
+
+  list.forEach(name => {
+    const id = "admin_" + sanitizeId(name);
+    container.innerHTML += `
+      <label>
+        <input type="checkbox" id="${id}">
+        <span>${name}</span>
+      </label>
+    `;
+  });
+}
+
+document.getElementById("adminWeek").addEventListener("change", loadAdminExercises);
+document.getElementById("adminDay").addEventListener("change", loadAdminExercises);
+
+/* ---------------------------------------------------------
+   LAGRE MANUELL REGISTRERING
+--------------------------------------------------------- */
+function saveAdminEntry() {
+  const week = parseInt(document.getElementById("adminWeek").value) - 1;
+  const day = parseInt(document.getElementById("adminDay").value);
+
+  const list = exercises[week][day];
+
+  // Lagre øvelser
+  list.forEach(name => {
+    const id = "done_uke" + week + "_dag" + day + "_" + sanitizeId(name);
+    const cb = document.getElementById("admin_" + sanitizeId(name));
+    if (cb.checked) localStorage.setItem(id, "1");
+    else localStorage.removeItem(id);
+  });
+
+  // Lagre km
+  const kmS = document.getElementById("adminKmSykkel").value;
+  const kmG = document.getElementById("adminKmGaa").value;
+
+  if (kmS !== "") localStorage.setItem(`km_sykkel_uke${week}_dag${day}`, kmS);
+  if (kmG !== "") localStorage.setItem(`km_gaa_uke${week}_dag${day}`, kmG);
+
+  // Marker som fullført
+  localStorage.setItem(`all_done_uke${week}_dag${day}`, "1");
+
+  // Legg inn historikk
+  let log = JSON.parse(localStorage.getItem("history_log") || "[]");
+  log.push({
+    week: week,
+    day: day,
+    weekday: ["Man","Tir","Ons","Tor","Fre","Lør","Søn"][day],
+    date: new Date().toLocaleDateString("no-NO"),
+    type: weeks[week][day].c,
+    kmSykkel: kmS || null,
+    kmGaa: kmG || null
+  });
+  localStorage.setItem("history_log", JSON.stringify(log));
+
+  closeAdminModal();
+  update();
+  showToast("Økt registrert manuelt");
+}
+
+/* ---------------------------------------------------------
+   TOAST
+--------------------------------------------------------- */
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.innerText = msg;
+  t.style.display = "block";
+  setTimeout(() => t.style.display = "none", 2000);
+}
+
+/* ---------------------------------------------------------
    INIT
 --------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
   update();
   scrollToToday();
 });
+                                            
