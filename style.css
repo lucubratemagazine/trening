@@ -225,3 +225,45 @@ body.dark .history-entry {
     gap: 10px;
   }
 }
+/* ---------------------------------------------------------
+   FASTE BAKGRUNNER FOR ØVELSER OG MÅL
+--------------------------------------------------------- */
+
+/* Alle bokser og modaler skal ha solid bakgrunn */
+.box,
+.history-entry,
+.modal-content,
+#goalBox,
+#exerciseOverlay,
+#goalsOverlay {
+  background-color: #ffffff;
+  color: #222;
+  backdrop-filter: none;
+  opacity: 1;
+}
+
+/* Mørk modus */
+body.dark .box,
+body.dark .history-entry,
+body.dark .modal-content,
+body.dark #goalBox,
+body.dark #exerciseOverlay,
+body.dark #goalsOverlay {
+  background-color: #1e1e1e;
+  color: #e5e5e5;
+  backdrop-filter: none;
+  opacity: 1;
+}
+
+/* Fjern eventuell gjennomsiktighet fra overlay */
+.modal-overlay,
+#goalsOverlay,
+#exerciseOverlay {
+  background-color: rgba(0, 0, 0, 0.45);
+}
+
+/* Sørg for at innholdet i modalen ikke arver transparent bakgrunn */
+.modal-content * {
+  background-color: inherit;
+}
+
