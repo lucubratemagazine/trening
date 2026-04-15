@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Treningsplan</title>
 
-    <!-- Manifest + PWA -->
-    <link rel="manifest" href="manifest.json">
+    <!-- PWA / fullskjerm -->
     <meta name="theme-color" content="#1E40AF">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+
+    <!-- Manifest -->
+    <link rel="manifest" href="manifest.json">
 
     <!-- CSS -->
     <link rel="stylesheet" href="style.css">
@@ -36,11 +41,11 @@
     <h2>Ukemål</h2>
     <button class="small-btn" onclick="openGoalsModal()">🎯 Mål</button>
 </div>
+
 <div class="btn-row">
     <button onclick="window.location.href='historikk.html'">Historikk</button>
 </div>
 
-    
 <div class="box" id="goalBox">Laster...</div>
 
 <div class="info" id="debugInfo"></div>
@@ -90,6 +95,9 @@
 <!-- Toast -->
 <div id="toast"></div>
 
+<!-- Flytende knapp for "Dagens økt" -->
+<button id="fabToday" onclick="scrollToToday()">Dagens økt</button>
+
 <!-- JS-filer -->
 <script src="messages.js"></script>
 <script src="data_weeks.js"></script>
@@ -98,7 +106,7 @@
 
 <script>
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("sw.js");
+  navigator.serviceWorker.register("service-worker.js");
 }
 </script>
 
