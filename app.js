@@ -455,7 +455,27 @@ document.getElementById("adminDay").addEventListener("change", loadAdminExercise
    LAGRE MANUELL REGISTRERING
 --------------------------------------------------------- */
 function saveAdminEntry() {
+function saveAdminWeight() {
   const week = parseInt(document.getElementById("adminWeek").value) - 1;
+  const weight = document.getElementById("adminWeight").value;
+
+  if (weight === "") {
+    showToast("Ingen vekt registrert");
+    return;
+  }
+
+  const key = "weight_uke" + week;
+  localStorage.setItem(key, weight);
+
+  // Sett startvekt hvis den ikke finnes
+  if (!localStorage.getItem("weight_start")) {
+    localStorage.setItem("weight_start", weight);
+  }
+
+  showToast("Vekt lagret for uke " + (week + 1));
+}
+  
+   const week = parseInt(document.getElementById("adminWeek").value) - 1;
   const day = parseInt(document.getElementById("adminDay").value);
 
   const list = exercises[week][day];
