@@ -519,9 +519,35 @@ function showToast(msg) {
 }
 
 /* ---------------------------------------------------------
-   INIT
+   TOAST
+--------------------------------------------------------- */
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.innerText = msg;
+    t.style.display = "block";
+    setTimeout(() => t.style.display = "none", 2000);
+}
+
+/* ---------------------------------------------------------
+   INIT (LASTES VED OPPSTART)
 --------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
-  update();
-  scrollToToday();
+
+    // Last lagret tema FØR layout tegnes
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+        document.body.classList.add("dark");
+    }
+
+    // Oppdater appen
+    update();
+    scrollToToday();
 });
+
+/* ---------------------------------------------------------
+   TEMA-BYTTING (LYS/MØRK)
+--------------------------------------------------------- */
+function toggleTheme() {
+    const isDark = document.body.classList.toggle("dark");
+    localStorage.setItem("theme", isDark ? "dark" : "light");
+}
