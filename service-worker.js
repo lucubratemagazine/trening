@@ -1,42 +1,66 @@
-const CACHE_NAME = "treningsplan-v1";
+// ---------------------------------------------------------
+//  SERVICE WORKER FOR TRENINGSAPP
+// ---------------------------------------------------------
 
-const ASSETS = [
-  "/treningsapp.html",
-  "/historikk.html",
-  "/style.css",
-  "/app.js",
-  "/history.js",
-  "/data_exercises.js",
-  "/manifest.json",
-  "/icon-192.png",
-  "/icon-512.png"
+const CACHE_NAME = "treningsapp-v1";
+
+// Filer som skal caches
+const FILES_TO_CACHE = [
+  "./",
+  "./treningsapp.html",
+  "./historikk.html",
+  "./style.css",
+  "./app.js",
+  "./data_weeks.js",
+  "./data_exercises.js",
+  "./messages.js",
+  "./manifest.json",
+  "./icons/icon-192.png",
+  "./icons/icon-512.png"
 ];
 
-self.addEventListener("install", (event) => {
+// ---------------------------------------------------------
+// INSTALL — cache alle filer
+// ---------------------------------------------------------
+self.addEventListener("install", event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
+    caches.open(CACHE_NAME).then(cache => {
+      return cache.addAll(FILES_TO_CACHE);
     })
   );
+  self.skipWaiting();
 });
 
-self.addEventListener("activate", (event) => {
+// ---------------------------------------------------------
+// ACTIVATE — slett gammel cache
+// ---------------------------------------------------------
+self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then((keys) =>
+    caches.keys().then(keys =>
       Promise.all(
         keys
-          .filter((key) => key !== CACHE_NAME)
-          .map((key) => caches.delete(key))
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
       )
     )
   );
+  self.clients.claim();
 });
 
-self.addEventListener("fetch", (event) => {
+// ---------------------------------------------------------
+// FETCH — bruk cache først, deretter nett
+// ---------------------------------------------------------
+self.addEventListener("fetch", event => {
   event.respondWith(
-    caches.match(event.request).then((cached) => {
-      if (cached) return cached;
-      return fetch(event.request);
+    caches.match(event.request).then(response => {
+      // Returner cache hvis tilgjengelig
+      if (response) return response;
+
+      // Hvis ikke, hent fra nett
+      return fetch(event.request).catch(() =>
+        // Offline fallback for HTML
+        caches.match("./treningsapp.html")
+      );
     })
   );
 });
