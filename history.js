@@ -7,7 +7,8 @@ function loadHistory() {
         return;
     }
 
-    entries.reverse(); // nyeste økter først
+    // Nyeste økter først
+    entries.reverse();
 
     entries.forEach(e => {
         const box = document.createElement("div");
@@ -17,9 +18,12 @@ function loadHistory() {
             <div class="history-top ${e.type}"></div>
             <div class="history-content">
                 <h3>${e.weekday} ${e.date} – Uke ${e.week + 1}</h3>
+
                 <p><strong>Økt:</strong> ${e.type}</p>
+
                 <p><strong>Kilometer sykkel:</strong> ${e.kmSykkel ?? "-"}</p>
                 <p><strong>Kilometer gå:</strong> ${e.kmGaa ?? "-"}</p>
+
                 <p class="done">✔ Fullført</p>
             </div>
         `;
